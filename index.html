@@ -1,0 +1,59 @@
+
+<html>
+<head>
+<title>Google Connect Javascript</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=no">
+<meta name="google-signin-client_id" content="563502636110-om5gv8nng8hupjm517g8vsp7mv7834vs.apps.googleusercontent.com">
+
+<style type="text/css">
+	body{background:#eee;font-family: arial;font-size: 14px;}
+	*{margin:0;padding:0;}
+</style>
+</head>
+<body>
+
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+<pre id="datos"></pre>
+<a href="#" onclick="signOut();">Logout</a>
+
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script> 
+function onReadyGoogleConnect(auth)
+{
+	console.log("inicio google connect");
+	verifySession(auth.isSignedIn.get());
+}
+function onFailure(a){
+	console.log("error: ",a);
+}
+
+function verifySession(isLogged){
+	alert("logeado? ", isLogged);
+}
+function signOut() {
+	var auth2 = gapi.auth2.getAuthInstance();
+	auth2.signOut().then(function () {
+		alert('cerro session correctamente');
+	});
+}
+
+function onSignIn(googleUser) {
+  	var profile = googleUser.getBasicProfile();
+  	var html = ' ID: ' + profile.getId();
+  		html+= ' Name: ' + profile.getName();
+		html+= ' Image URL: ' + profile.getImageUrl();
+		html+= ' Email: ' + profile.getEmail();
+	document.getElementById('datos').innerText = html;
+}
+
+// gapi
+gapi.load('auth2', function() 
+{
+	var auth2 = gapi.auth2.getAuthInstance();
+	auth2.then(onReadyGoogleConnect, onFailure);
+	auth2.isSignedIn.listen(verifySession);
+
+});
+</script>
